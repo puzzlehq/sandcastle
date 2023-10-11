@@ -1,0 +1,25 @@
+{
+  "name": "sandcastle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "pnpm clean && tsc -b",
+    "build:dev": "tsc -b --watch",
+    "clean": "rm -rf ./dest tsconfig.tsbuildinfo",
+    "start": "pnpm build && DEBUG='sandcastle' node ./dest/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aztec/aztec.js": "^0.7.10",
+    "@aztec/circuits.js": "^0.7.10",
+    "@aztec/noir-contracts": "^0.7.10",
+    "@aztec/types": "^0.7.10",
+    "@types/node": "^20.8.2",
+    "typescript": "^5.2.2"
+  }
+}
