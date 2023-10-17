@@ -2,17 +2,23 @@ mod public_key_note;
 
 contract MultiSchnorr {
   use dep::std;
+  use dep::std::option::Option;
+
   use dep::aztec::{
     abi::{ PrivateCircuitPublicInputs, PrivateContextInputs, Hasher },
-    account::AccountActions,
     constants_gen::GENERATOR_INDEX__SIGNATURE_PAYLOAD,
     context::{PrivateContext, PublicContext, Context},
-    entrypoint::{ EntrypointPayload, ENTRYPOINT_PAYLOAD_SIZE },
     log::emit_encrypted_log,
     note::{ note_header::NoteHeader, utils as note_utils, note_getter_options::NoteGetterOptions },
-    oracle::{ get_public_key::get_public_key, auth_witness::get_auth_witness },
-    state_vars::set::Set,
+    oracle::{ get_public_key::get_public_key },
+    state_vars::{ immutable_singleton::ImmutableSingleton, set::Set },
     types::{ vec::BoundedVec, point::Point },
+  };
+
+  use dep::authwit:: {
+    entrypoint::{ EntrypointPayload, ENTRYPOINT_PAYLOAD_SIZE },
+    account::AccountActions,
+    auth_witness::get_auth_witness,
   };
 
   use crate::public_key_note::{PublicKeyNote, PublicKeyNoteMethods, PUBLIC_KEY_NOTE_LEN};

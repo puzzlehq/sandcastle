@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "dest",
-    "rootDir": "src",
     "target": "es2020",
     "lib": ["dom", "esnext", "es2017.object"],
     "module": "NodeNext",
@@ -19,5 +17,5 @@
     "skipLibCheck": true
   },
   "references": [],
-  "include": ["src", "src/*.json"]
+  "include": ["src", "src/*.json", "contracts"]
 }
