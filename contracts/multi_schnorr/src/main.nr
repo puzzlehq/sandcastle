@@ -51,13 +51,13 @@ contract MultiSchnorr {
     storage.signers.insert(&mut pub_key_note_0);
     storage.signers.insert(&mut pub_key_note_1);
     
-    emit_encrypted_log(
-      &mut context,
-      this,
-      storage.signers.storage_slot,
-      get_public_key(this),
-      storage.signers.serialize(),
-    );
+    // emit_encrypted_log(
+    //   &mut context,
+    //   this,
+    //   storage.signers.storage_slot,
+    //   get_public_key(this),
+    //   storage.signers.serialize(),
+    // );
   }
 
   #[aztec(private)]
