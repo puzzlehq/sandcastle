@@ -1,7 +1,7 @@
-import { AuthWitnessProvider, BaseAccountContract, CompleteAddress, Fr, GrumpkinPrivateKey } from "@aztec/aztec.js";
+import { type AuthWitnessProvider, BaseAccountContract, CompleteAddress, Fr, type GrumpkinPrivateKey } from "@aztec/aztec.js";
 import { Schnorr } from "@aztec/circuits.js/barretenberg";
 import { AuthWitness } from "@aztec/types";
-import MultiSchnorrAccountContractArtifact from './MultiSchnorr.json' assert { type: 'json' };
+import MultiSchnorrAccountContractArtifact from './contracts/multi_schnorr/target/MultiSchnorr.json' assert { type: 'json' };
 
 export class MultiSchnorrAccountContract extends BaseAccountContract {
   constructor(private privateKey1: GrumpkinPrivateKey, private privateKey2: GrumpkinPrivateKey) {
