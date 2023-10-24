@@ -11,7 +11,7 @@
     "install:noir": "curl -L https://raw.githubusercontent.com/noir-lang/noirup/main/install | bash noirup -v 0.16.0-aztec.1",
     "install:sandbox": "docker pull aztecprotocol/aztec-sandbox:0.9.0",
     "start:sandbox": "SANDBOX_VERSION=0.9.0 /bin/bash -c \"$(curl -fsSL 'https://sandbox.aztec.network')\"",
-    "compile": "aztec-cli compile src/contracts --outdir ../artifacts --typescript ../artifacts"
+    "compile": "aztec-cli compile src/contracts/** --outdir ../../artifacts --typescript ../../artifacts"
   },
   "dependencies": {
     "@aztec/aztec.js": "^0.9.0",
@@ -19,11 +19,17 @@
     "@aztec/foundation": "^0.9.0",
     "@aztec/noir-contracts": "^0.9.0",
     "@aztec/types": "^0.9.0",
+    "@radix-ui/react-icons": "^1.3.0",
+    "@radix-ui/react-slot": "^1.0.2",
     "@rollup/plugin-inject": "^5.0.5",
     "base64-js": "^1.5.1",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
     "debug": "^4.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "tailwind-merge": "^1.14.0",
+    "tailwindcss-animate": "^1.0.7",
     "vite-plugin-node-stdlib-browser": "^0.2.1"
   },
   "devDependencies": {
