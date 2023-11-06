@@ -1,56 +1,47 @@
-import {
-  AccountManager,
-  NodeInfo,
-  PXE,
-  createPXEClient,
-  waitForSandbox,
-} from '@aztec/aztec.js';
-import { GrumpkinScalar } from '@aztec/circuits.js';
-import { MultiSchnorrAccountContract } from './multi_schnorr_account_contract.js';
-import debug from 'debug';
-import { useEffect, useState } from 'react';
-
-const logger = debug('sandcastle');
-logger.enabled = true;
-const { VITE_SANDBOX_URL } = import.meta.env;
-const PRIVATE_KEY_1 = new GrumpkinScalar(0xd35d743ac0dfe3d6dbe6be8c877cb524a00ab1e3d52d7bada095dfc8894ccfan);
-const PRIVATE_KEY_2 = new GrumpkinScalar(0xd35d743ac0dfe3d6dbe6be8c877cb524b00ab1e3d52d7bada095dfc8894ccfan);
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './components/ui/card.tsx';
+import { networkAtom } from './components/network.tsx';
+import { Input } from './components/ui/input.tsx';
+import { Button } from './components/ui/button.tsx';
+import { useAtom } from 'jotai';
+import { MultisigCard } from './components/multisig-card.tsx';
+import { getAccounts } from './lib/storage.ts';
+import { AccountCard } from './components/account-card.tsx';
+import { Header } from './components/header.tsx';
 
 function App() {
-  const [pxe, setPXE] = useState<PXE | undefined>();
-  const [nodeInfo, setNodeInfo] = useState<NodeInfo | undefined>()
-
-  useEffect(() => {
-    (async () => {
-      logger('creating pxe client...');
-      const pxe = createPXEClient(VITE_SANDBOX_URL);
-      logger('waiting for sandbox...');
-      await waitForSandbox(pxe);
-      setPXE(pxe);
-      logger('getting node info...');
-      const nodeInfo = await pxe.getNodeInfo();
-      setNodeInfo(nodeInfo);
-
-      const encryptionPrivateKey = GrumpkinScalar.random();
-      const account = new AccountManager(pxe, encryptionPrivateKey, new MultiSchnorrAccountContract(PRIVATE_KEY_1, PRIVATE_KEY_2));
-      logger('account', account);
-      logger('deploying account...');
-      const wallet = await account.waitDeploy();
-      logger('deployed account', wallet);
-      const address = wallet.getCompleteAddress().address;
-      logger('address', address);
-    })()
-  }, []);
+  const [network] = useAtom(networkAtom);
+  const accounts = getAccounts();
 
   return (
-    <>
-      {pxe ? (
-        <p className="text-3xl font-bold underline">Sandbox running ({nodeInfo?.chainId})</p>
+    <div className="hidden flex-col md:flex">
+      <Header />
+      {network.pxe ? (
+        <div className='w-50 flex-1 space-y-4 p-36 pt-6'>
+          <div className='grid gap-4 grid-cols-3'>
+            {accounts.map(account => (
+              <AccountCard key={account.name} account={account} />
+            ))}
+          </div>
+          <div className="flex-1 space-y-4">
+            <MultisigCard />
+            <Card>
+              <CardHeader>
+                <CardTitle>Propose Message</CardTitle>
+              </CardHeader>
+              <CardContent className="">
+                <Input placeholder='These pretzels are making me thirsty'/>
+              </CardContent>
+              <CardFooter>
+                <Button className='ml-auto'>Propose</Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
       ) : (
-        <p>Loading PXE...</p>
+        <div>Connecting...</div>
       )}
-    </>
+    </div>
   )
-}
+};
 
-export default App
+export default App;

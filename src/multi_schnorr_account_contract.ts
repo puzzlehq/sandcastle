@@ -1,29 +1,35 @@
-import { type AuthWitnessProvider, BaseAccountContract, CompleteAddress, Fr, type GrumpkinPrivateKey } from "@aztec/aztec.js";
-import { Schnorr } from "@aztec/circuits.js/barretenberg";
+import { type AuthWitnessProvider, BaseAccountContract, CompleteAddress, Fr, Point } from "@aztec/aztec.js";
+import { SchnorrSignature } from "@aztec/circuits.js/barretenberg";
 import { AuthWitness } from "@aztec/types";
-import MultiSchnorrAccountContractArtifact from './contracts/multi_schnorr/target/MultiSchnorr.json' assert { type: 'json' };
+import MultiSchnorrAccountContractArtifact from './artifacts/MultiSchnorr.json' assert { type: 'json' };
 
 export class MultiSchnorrAccountContract extends BaseAccountContract {
-  constructor(private privateKey1: GrumpkinPrivateKey, private privateKey2: GrumpkinPrivateKey) {
+  signatures: SchnorrSignature[] = [];
+
+  constructor(private pubkey1: Point, private pubkey2: Point, private pubkey3: Point) {
+    /* @ts-ignore next-line */
     super(MultiSchnorrAccountContractArtifact);
   }
 
-  getDeploymentArgs(): Promise<any[]> {
-    return Promise.resolve([]);
+  async getDeploymentArgs(): Promise<any[]> {
+    return Promise.resolve([
+      ...this.pubkey1.toFields(),
+      ...this.pubkey2.toFields(),
+      ...this.pubkey3.toFields()
+    ]);
   }
 
   getAuthWitnessProvider(_address: CompleteAddress): AuthWitnessProvider {
-    const privateKey1 = this.privateKey1;
-    const privateKey2 = this.privateKey2;
+    const sigBuffers = this.signatures.map(s => s.toFields());
     return {
       async createAuthWitness(message: Fr): Promise<AuthWitness> {
-        /// note: here the wallet is supposed to deserialize the message, maybe prompt the user for signature or do automatic signature?
-        const signer1 = await Schnorr.new();
-        const signature1 = signer1.constructSignature(message.toBuffer(), privateKey1);
-        const signer2 = await Schnorr.new();
-        const signature2 = signer2.constructSignature(message.toBuffer(), privateKey2);
-        return new AuthWitness(message, [...signature1.toBuffer(), ...signature2.toBuffer()]);
+        return new AuthWitness(message, sigBuffers.flat());
       },
     };
+  }
+
+  /// note: where/how can i call this? or is this the wrong approach?
+  addSignature(signature: SchnorrSignature) {
+    this.signatures.push(signature);
   }
 }

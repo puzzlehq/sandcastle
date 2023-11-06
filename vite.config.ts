@@ -14,7 +14,7 @@ const wasmPath = `${dirname(require.resolve(`@aztec/circuits.js`)).replace(
 export default defineConfig({
   resolve: {
     alias: {
-      $src: path.resolve('src'),
+      "@": path.resolve('src'),
     }
   },
 	plugins: [

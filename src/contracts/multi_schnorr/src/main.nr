@@ -28,7 +28,7 @@ contract MultiSchnorr {
   }
 
   impl Storage {
-    fn init(context: Context) -> pub Self {
+    fn init(context: Context) -> Self {
       Storage { 
         signers: Set::new(context, 1, PublicKeyNoteMethods),
       }
@@ -43,21 +43,17 @@ contract MultiSchnorr {
     signing_pub_key_y_0: pub Field,
     signing_pub_key_x_1: pub Field,
     signing_pub_key_y_1: pub Field,
+    signing_pub_key_x_2: pub Field,
+    signing_pub_key_y_2: pub Field,
   ) {        
     let this = context.this_address();
 
     let mut pub_key_note_0 = PublicKeyNote::new(signing_pub_key_x_0, signing_pub_key_y_0, this);
     let mut pub_key_note_1 = PublicKeyNote::new(signing_pub_key_x_1, signing_pub_key_y_1, this);
-    storage.signers.insert(&mut pub_key_note_0);
-    storage.signers.insert(&mut pub_key_note_1);
-    
-    emit_encrypted_log(
-      &mut context,
-      this,
-      storage.signers.storage_slot,
-      get_public_key(this),
-      []
-    );
+    let mut pub_key_note_2 = PublicKeyNote::new(signing_pub_key_x_2, signing_pub_key_y_2, this);
+    storage.signers.insert(&mut pub_key_note_0, true);
+    storage.signers.insert(&mut pub_key_note_1, true);
+    storage.signers.insert(&mut pub_key_note_2, true);
   }
 
   #[aztec(private)]
