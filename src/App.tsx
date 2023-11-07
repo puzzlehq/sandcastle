@@ -49,9 +49,9 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const address = multisig?.getAddress();
       const wallet = multisig;
-      if (address && wallet) {
+      if (wallet) {
+        const address = wallet.getAddress();
         logger('deploying token contract...');
         const token = await TokenContract.deploy(wallet, { address }).send().deployed();
         logger(`deployed token contract at ${token.address}`);
@@ -87,7 +87,7 @@ function App() {
 
     proposals.push({
       id: proposals.length,
-      message: Fr.fromString(message),
+      message: Fr.fromBuffer(message),
       signatures: accounts.map(account => {
         return {
           pubkey: account.pubkey.toString(),
