@@ -15,6 +15,8 @@ import { useEffect, useState } from 'react';
 import { AccountWalletWithPrivateKey, computeAuthWitMessageHash, computeMessageSecretHash, getSandboxAccountsWallets } from '@aztec/aztec.js';
 import debug from 'debug';
 import { TokenContract } from '@aztec/noir-contracts/types';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import { HStack } from './components/ui/stacks.tsx';
 
 const logger = debug('sandcastle:app');
 logger.enabled = true;
@@ -153,14 +155,23 @@ function App() {
               <CardHeader>
                 <CardTitle>Propose Transfer</CardTitle>
               </CardHeader>
-              <form onSubmit={handleSubmit(addNewProposal)}>
-                <CardContent className="">
-                  <Input {...register('amount')} placeholder='10'/>
+              { token ? (
+                <form onSubmit={handleSubmit(addNewProposal)}>
+                  <CardContent className="">
+                    <Input {...register('amount')} placeholder='10'/>
+                  </CardContent>
+                  <CardFooter>
+                    <Button type='submit' className='ml-auto'>Propose</Button>
+                  </CardFooter>
+                </form>
+              ) : (
+                <CardContent>
+                  <HStack className='items-center'>
+                    <p>Deploying token contract...</p>
+                    <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+                  </HStack>
                 </CardContent>
-                <CardFooter>
-                  <Button type='submit' className='ml-auto'>Propose</Button>
-                </CardFooter>
-              </form>
+              ) }
             </Card>
               <Card>
                 <CardHeader>

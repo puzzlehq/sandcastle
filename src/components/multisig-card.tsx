@@ -85,7 +85,10 @@ const MultisigCard = () => {
             {isCreating ? 'Creating...' : 'Create'}
           </Button>
         ) : (
-          <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+          <HStack className='items-center'>
+            <p>Deploying multisig contract...</p>
+            <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+          </HStack>
         )}
       </CardContent>
     </Card>
