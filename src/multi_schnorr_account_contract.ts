@@ -3,6 +3,7 @@ import { SchnorrSignature } from "@aztec/circuits.js/barretenberg";
 import { AuthWitness } from "@aztec/types";
 import MultiSchnorrAccountContractArtifact from './artifacts/MultiSchnorr.json' assert { type: 'json' };
 
+
 export class MultiSchnorrAccountContract extends BaseAccountContract {
   signatures: SchnorrSignature[] = [];
 

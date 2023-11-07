@@ -1,0 +1,75 @@
+import { Button } from "./ui/button.tsx";
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card.tsx";
+import { Account, Proposal, getAccounts } from "@/lib/storage.ts";
+import { HStack } from "./ui/stacks.tsx";
+import { CheckIcon, Cross2Icon } from '@radix-ui/react-icons';
+
+enum Status {
+  NeedsDecision,
+  Approved,
+  Denied
+}
+
+const ProposalRow = (props: {
+  proposal: Proposal,
+  approve: (account: Account, proposal: Proposal) => void,
+  deny: (account: Account, proposal: Proposal) => void,
+}) => {
+  const { proposal, approve, deny } = props;
+  const accounts = getAccounts();
+
+  const statuses = accounts.map(account => {
+    const signature = proposal.signatures.find(s => s.pubkey === account.pubkey.toString());
+    if (!signature) throw new Error(`couldnt get signature for ${account.name}`);
+    console.log('statusing signature', signature);
+    if (!!signature.signature && !signature.denied) {
+      return { account, status: Status.Approved };
+    } else if (signature.denied) {
+      return { account, status: Status.Denied };
+    } else {
+      return { account, status: Status.NeedsDecision };
+    }
+  });
+
+  return (
+    <Card className="col-span-4">
+      <CardHeader>
+        <CardTitle>
+          <HStack className='justify-between items-top'>
+            <p>{ proposal.message.toString() }</p>
+            <Button>Execute</Button>
+          </HStack>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="">
+        <HStack className='px-3 justify-center'>
+          { statuses.map(({ account, status }) => {
+            return (
+              <Card key={account.name}>
+                <CardHeader className='p-4'>
+                  <CardTitle>{ account.name }</CardTitle>
+                </CardHeader>
+                <CardContent className='p-4'>
+                  { status === Status.Approved && (
+                    <CheckIcon />
+                  )}
+                  { status === Status.Denied && (
+                    <Cross2Icon />
+                  )}
+                  { status === Status.NeedsDecision && (
+                    <HStack>
+                      <Button onClick={() => approve(account, proposal)}><CheckIcon /></Button>
+                      <Button variant='secondary' onClick={() => deny(account, proposal)}><Cross2Icon /></Button>
+                    </HStack>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </HStack>
+      </CardContent>
+    </Card>
+  );
+};
+
+export { ProposalRow };

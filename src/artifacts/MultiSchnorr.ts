@@ -16,10 +16,6 @@ import {
   EthAddressLike,
   FieldLike,
   Fr,
-<<<<<<< HEAD
-=======
-  PXE,
->>>>>>> 33615c43756f77a28b9bb2587222124191b01e4d
   Point,
   PublicKey,
   Wallet,
@@ -59,25 +55,15 @@ export class MultiSchnorrContract extends ContractBase {
   /**
    * Creates a tx to deploy a new instance of this contract.
    */
-<<<<<<< HEAD
   public static deploy(wallet: Wallet, signing_pub_key_x_0: FieldLike, signing_pub_key_y_0: FieldLike, signing_pub_key_x_1: FieldLike, signing_pub_key_y_1: FieldLike, signing_pub_key_x_2: FieldLike, signing_pub_key_y_2: FieldLike) {
     return new DeployMethod<MultiSchnorrContract>(Point.ZERO, wallet, MultiSchnorrContractArtifact, Array.from(arguments).slice(1));
-=======
-  public static deploy(pxe: PXE, signing_pub_key_x_0: FieldLike, signing_pub_key_y_0: FieldLike, signing_pub_key_x_1: FieldLike, signing_pub_key_y_1: FieldLike) {
-    return new DeployMethod<MultiSchnorrContract>(Point.ZERO, pxe, MultiSchnorrContractArtifact, Array.from(arguments).slice(1));
->>>>>>> 33615c43756f77a28b9bb2587222124191b01e4d
   }
 
   /**
    * Creates a tx to deploy a new instance of this contract using the specified public key to derive the address.
    */
-<<<<<<< HEAD
   public static deployWithPublicKey(publicKey: PublicKey, wallet: Wallet, signing_pub_key_x_0: FieldLike, signing_pub_key_y_0: FieldLike, signing_pub_key_x_1: FieldLike, signing_pub_key_y_1: FieldLike, signing_pub_key_x_2: FieldLike, signing_pub_key_y_2: FieldLike) {
     return new DeployMethod<MultiSchnorrContract>(publicKey, wallet, MultiSchnorrContractArtifact, Array.from(arguments).slice(2));
-=======
-  public static deployWithPublicKey(pxe: PXE, publicKey: PublicKey, signing_pub_key_x_0: FieldLike, signing_pub_key_y_0: FieldLike, signing_pub_key_x_1: FieldLike, signing_pub_key_y_1: FieldLike) {
-    return new DeployMethod<MultiSchnorrContract>(publicKey, pxe, MultiSchnorrContractArtifact, Array.from(arguments).slice(2));
->>>>>>> 33615c43756f77a28b9bb2587222124191b01e4d
   }
   
 

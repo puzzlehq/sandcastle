@@ -1,5 +1,6 @@
 import { generatePublicKey } from "@aztec/aztec.js";
-import { GrumpkinScalar, Point } from "@aztec/circuits.js";
+import { Fr, GrumpkinScalar, Point } from "@aztec/circuits.js";
+import { SchnorrSignature } from "@aztec/circuits.js/barretenberg";
 
 const ACCOUNTS = 'accounts';
 const ENCRYPTION_KEY = 'encryption_key';
@@ -54,4 +55,55 @@ export function getEncryptionKey() {
     return GrumpkinScalar.fromString(keyString);
   }
   return null;
+}
+
+const PROPOSALS = 'proposals';
+export type Signature = {
+  pubkey: string;
+  signature?: SchnorrSignature;
+  denied: boolean;
+};
+export type Proposal = {
+  id: number;
+  message: Fr;
+  signatures: Signature[];
+};
+export type ProposalStorage = {
+  id: number;
+  message: string;
+  signatures: {
+    pubkey: string;
+    signature?: string;
+    denied: boolean
+  }[]
+};
+
+export function storeProposals(proposals: Proposal[]) {
+  const storage: ProposalStorage[] = proposals.map(p => ({
+    id: p.id,
+    message: p.message.toString(),
+    signatures: p.signatures.map((s: Signature) => {
+      return {
+        pubkey: s.pubkey.toString(),
+        signature: s.signature?.toString(),
+        denied: s.denied
+      };
+    })
+  }));
+  localStorage.setItem(PROPOSALS, JSON.stringify(storage));
+}
+
+export function getProposals(): Proposal[] {
+  const storage: ProposalStorage[] = JSON.parse(localStorage.getItem(PROPOSALS) ?? '[]');
+  return storage.map(s => ({
+    id: s.id,
+    message: Fr.fromString(s.message),
+    signatures: s.signatures.map(string => {
+      return {
+        pubkey: string.pubkey,
+        signature: string.signature ? SchnorrSignature.fromString(string.signature) : undefined,
+        denied: string.denied,
+      }
+    })
+  }));
 }
