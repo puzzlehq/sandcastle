@@ -65,11 +65,13 @@ export type Signature = {
 };
 export type Proposal = {
   id: number;
+  amount: number;
   message: Fr;
   signatures: Signature[];
 };
 export type ProposalStorage = {
   id: number;
+  amount: number;
   message: string;
   signatures: {
     pubkey: string;
@@ -81,6 +83,7 @@ export type ProposalStorage = {
 export function storeProposals(proposals: Proposal[]) {
   const storage: ProposalStorage[] = proposals.map(p => ({
     id: p.id,
+    amount: p.amount,
     message: p.message.toString(),
     signatures: p.signatures.map((s: Signature) => {
       return {
@@ -97,6 +100,7 @@ export function getProposals(): Proposal[] {
   const storage: ProposalStorage[] = JSON.parse(localStorage.getItem(PROPOSALS) ?? '[]');
   return storage.map(s => ({
     id: s.id,
+    amount: s.amount,
     message: Fr.fromString(s.message),
     signatures: s.signatures.map(string => {
       return {

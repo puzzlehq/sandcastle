@@ -89,6 +89,7 @@ function App() {
 
     proposals.push({
       id: proposals.length,
+      amount,
       message: Fr.fromBuffer(message),
       signatures: accounts.map(account => {
         return {
@@ -137,6 +138,15 @@ function App() {
     });
   
     setProposals(proposals);
+  }
+
+  const execute = async (proposal: Proposal) => {
+    if (!network || !multisig || !token || !recipients) return;
+    const authWit = await multisig.createAuthWitness(proposal.message);
+    await multisig.addAuthWitness(authWit);
+    logger('transferring tokens...');
+    await token.methods.transfer(recipients[0].getAddress(), multisig.getAddress(), proposal.amount, proposal.id).send().wait();
+    logger('transferred tokens!');
   }
 
   return (
