@@ -1,7 +1,7 @@
 import { Button } from "./ui/button.tsx";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card.tsx";
 import { PersonIcon, ReloadIcon } from '@radix-ui/react-icons';
-import { useAtom } from 'jotai';
+import { atom, useAtom } from 'jotai';
 import { networkAtom } from "./network.tsx";
 import { MultiSchnorrAccountContract } from "@/multi_schnorr_account_contract.ts";
 import { AccountManager, AccountWalletWithPrivateKey } from "@aztec/aztec.js";
@@ -11,14 +11,16 @@ import { useEffect, useState } from "react";
 import { getAccounts, getEncryptionKey, storeEncryptionKey } from "@/lib/storage.ts";
 import { HStack } from "./ui/stacks.tsx";
 
-const logger = debug('sandcastle:account');
+const logger = debug('sandcastle:multisig');
 logger.enabled = true;
 
+export const multisigAtom = atom<AccountWalletWithPrivateKey | undefined>(undefined);
+
 const MultisigCard = () => {
-  const accounts = getAccounts();
   const [network] = useAtom(networkAtom);
-  const [wallet, setWallet] = useState<AccountWalletWithPrivateKey | undefined>();
+  const [wallet, setWallet] = useAtom(multisigAtom);
   const [noWallet, setNoWallet] = useState(false);
+  const accounts = getAccounts();
 
   useEffect(() => {
     (async () => {
@@ -28,22 +30,22 @@ const MultisigCard = () => {
         return;
       }
       if (!network.pxe) return;
+      if (!accounts) return;
       const pubkeys = accounts.map(a => a.pubkey);
       const multisig = new AccountManager(
         network.pxe,
         encryptionKey,
         new MultiSchnorrAccountContract(pubkeys[0], pubkeys[1], pubkeys[2])
       );
-      setWallet(await multisig.getWallet());
+      const wallet = await multisig.waitDeploy();
+      setWallet(wallet);
     })()
   }, [network]);
 
   const [isCreating, setIsCreating] = useState(false);
   const createMultisig = async () => {
-    if (!network.pxe) return;
-    if (wallet) return;
+    if (!network.pxe || !accounts || wallet) return;
     setIsCreating(true);
-    logger('creating multisig...');
     const encryptionPrivateKey = GrumpkinScalar.random();
     storeEncryptionKey(encryptionPrivateKey);
     const pubkeys = accounts.map(a => a.pubkey);
@@ -52,10 +54,7 @@ const MultisigCard = () => {
       encryptionPrivateKey,
       new MultiSchnorrAccountContract(pubkeys[0], pubkeys[1], pubkeys[2])
     );
-    logger('created multisig', createdMultisig);
-    logger('deploying multisig...');
     const w = await createdMultisig.waitDeploy();
-    logger('deployed multisig', w);
     setWallet(w);
     setIsCreating(false);
   };

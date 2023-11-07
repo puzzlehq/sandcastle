@@ -6,20 +6,20 @@ settings:
 
 dependencies:
   '@aztec/aztec.js':
-    specifier: ^0.12.0
-    version: 0.12.0(typescript@5.0.2)
+    specifier: 0.14.1
+    version: 0.14.1(typescript@5.0.2)
   '@aztec/circuits.js':
-    specifier: ^0.12.0
-    version: 0.12.0
+    specifier: 0.14.1
+    version: 0.14.1
   '@aztec/foundation':
-    specifier: ^0.12.0
-    version: 0.12.0
+    specifier: 0.14.1
+    version: 0.14.1
   '@aztec/noir-contracts':
-    specifier: ^0.12.0
-    version: 0.12.0(typescript@5.0.2)
+    specifier: 0.14.1
+    version: 0.14.1(typescript@5.0.2)
   '@aztec/types':
-    specifier: ^0.12.0
-    version: 0.12.0(typescript@5.0.2)
+    specifier: 0.14.1
+    version: 0.14.1(typescript@5.0.2)
   '@radix-ui/react-avatar':
     specifier: ^1.0.4
     version: 1.0.4(@types/react-dom@18.2.7)(@types/react@18.2.15)(react-dom@18.2.0)(react@18.2.0)
@@ -165,14 +165,14 @@ packages:
       '@jridgewell/trace-mapping': 0.3.20
     dev: true
 
-  /@aztec/aztec.js@0.12.0(typescript@5.0.2):
-    resolution: {integrity: sha512-5ADuhsd+0sz3sia6HQZrzdbJoqOKDLX2AmtXOf0cYF/21DICK6/rfV/bykTh64SI0mmtmReXBdQEdqll+3OSyw==}
+  /@aztec/aztec.js@0.14.1(typescript@5.0.2):
+    resolution: {integrity: sha512-RwQ0uA2KrwTFCF69ImnNWmCYgnS1Xkgz7F7Te2eQjgndafGhx0eUN24my0/WyuY0/VxoBWC/mCPDlCLjmIDYAw==}
     engines: {node: '>=18'}
     dependencies:
-      '@aztec/circuits.js': 0.12.0
-      '@aztec/ethereum': 0.12.0(typescript@5.0.2)
-      '@aztec/foundation': 0.12.0
-      '@aztec/types': 0.12.0(typescript@5.0.2)
+      '@aztec/circuits.js': 0.14.1
+      '@aztec/ethereum': 0.14.1(typescript@5.0.2)
+      '@aztec/foundation': 0.14.1
+      '@aztec/types': 0.14.1(typescript@5.0.2)
       lodash.every: 4.6.0
       lodash.partition: 4.6.0
       lodash.zip: 4.2.0
@@ -186,11 +186,11 @@ packages:
       - zod
     dev: false
 
-  /@aztec/circuits.js@0.12.0:
-    resolution: {integrity: sha512-GZIOQPL/30SBSWvr5kQUfkxA126pJxM9qONAWSMffNOGZAMccdJXtQmx/HPyylFmgkZP01iB1kN73fAlmhAQpA==}
+  /@aztec/circuits.js@0.14.1:
+    resolution: {integrity: sha512-3JznDkXZyfWqWhXH/N00o6gI5xmUMXg3RnMxvG3ckmX3GRKy7QXv5yW+YeIpuymbCjaOtojeTJsgqxO88sjm0A==}
     engines: {node: '>=18'}
     dependencies:
-      '@aztec/foundation': 0.12.0
+      '@aztec/foundation': 0.14.1
       '@msgpack/msgpack': 3.0.0-beta2
       '@noble/curves': 1.2.0
       '@types/lodash.camelcase': 4.3.8
@@ -209,11 +209,11 @@ packages:
       - supports-color
     dev: false
 
-  /@aztec/ethereum@0.12.0(typescript@5.0.2):
-    resolution: {integrity: sha512-0V9wLXfBLwhSCNm9MSBjgNOqr8JRe7otjDeiw4KFypsNzZyUsiX2+96w4Ujc+UApk3J697Q3Bsw0H8RPa1WTgQ==}
+  /@aztec/ethereum@0.14.1(typescript@5.0.2):
+    resolution: {integrity: sha512-sKMsYfX0ppuXUsuZiDVGu+j3y0pAuNgF5DtikcB7ocZm5LZc1n1Ok2SSLEODWp3XRRYq6LU3Y3wT/peXGjJq8w==}
     engines: {node: '>=18'}
     dependencies:
-      '@aztec/foundation': 0.12.0
+      '@aztec/foundation': 0.14.1
       dotenv: 16.3.1
       tslib: 2.6.2
       viem: 1.16.6(typescript@5.0.2)
@@ -225,11 +225,12 @@ packages:
       - zod
     dev: false
 
-  /@aztec/foundation@0.12.0:
-    resolution: {integrity: sha512-zGV2Ykko0WEqsZOavhrDsGqlz4k/Kb+aa46isAAtNBaeu/ZAfpNbP4xcFj0kkwsi29hK4osZf+OnxaS8BQwNSQ==}
+  /@aztec/foundation@0.14.1:
+    resolution: {integrity: sha512-vH3UWkGJTBhkSHI33+Aqjnl3vy6kJkoa1R7ORKd2hXBH7apt/f4VHBfu/91D1KVfcYWRpBRTMNg7LDOMWuWVIA==}
     engines: {node: '>=18'}
     dependencies:
       '@koa/cors': 4.0.0
+      '@noble/curves': 1.2.0
       debug: 4.3.4
       detect-node: 2.1.0
       hash.js: 1.1.7
@@ -243,16 +244,17 @@ packages:
       memdown: 6.1.1
       pako: 2.1.0
       sha3: 2.1.4
+      zod: 3.22.4
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@aztec/noir-contracts@0.12.0(typescript@5.0.2):
-    resolution: {integrity: sha512-hplcLmclrjVP6BydhDC0iMyZbKemxZuiWsI4WfP9udOkjwumvpE2I6+ljPyTZgnc/mVtAEJxr5nAovWjZAtUiQ==}
+  /@aztec/noir-contracts@0.14.1(typescript@5.0.2):
+    resolution: {integrity: sha512-3TKsMgHpDDL7VdQIl3kPauQKNu00Ax3B1ZWsLjBwZj7KwRfYFwaGecsOm8aexafm/V/CLvTYTHMIltvzm6F0lw==}
     engines: {node: '>=18'}
     dependencies:
-      '@aztec/aztec.js': 0.12.0(typescript@5.0.2)
-      '@aztec/foundation': 0.12.0
+      '@aztec/aztec.js': 0.14.1(typescript@5.0.2)
+      '@aztec/foundation': 0.14.1
       lodash.omit: 4.5.0
       tslib: 2.6.2
     transitivePeerDependencies:
@@ -264,13 +266,13 @@ packages:
       - zod
     dev: false
 
-  /@aztec/types@0.12.0(typescript@5.0.2):
-    resolution: {integrity: sha512-wAn5d6uGGQwc/w78wbrNJDiK/C90t5Tbr66X2ZmVUhVHF1aacu0pr7nFnQCycO9YfJnHZqdgqQ7wkNRJnPIYvA==}
+  /@aztec/types@0.14.1(typescript@5.0.2):
+    resolution: {integrity: sha512-uVCrdl32V5YGzvWZxlawcl4BpInQgbstVQoIHFEc9A+6Af8MSayUjiIjxtwkFJ3/KkthAlJ0SlP/w6DpOdyiZg==}
     engines: {node: '>=18'}
     dependencies:
-      '@aztec/circuits.js': 0.12.0
-      '@aztec/ethereum': 0.12.0(typescript@5.0.2)
-      '@aztec/foundation': 0.12.0
+      '@aztec/circuits.js': 0.14.1
+      '@aztec/ethereum': 0.14.1(typescript@5.0.2)
+      '@aztec/foundation': 0.14.1
       browserify-cipher: 1.0.1
       lodash.clonedeep: 4.5.0
       lodash.isequal: 4.5.0
@@ -4709,3 +4711,7 @@ packages:
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  /zod@3.22.4:
+    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
+    dev: false

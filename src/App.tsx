@@ -3,24 +3,42 @@ import { networkAtom } from './components/network.tsx';
 import { Input } from './components/ui/input.tsx';
 import { Button } from './components/ui/button.tsx';
 import { useAtom } from 'jotai';
-import { MultisigCard } from './components/multisig-card.tsx';
+import { MultisigCard, multisigAtom } from './components/multisig-card.tsx';
 import { Account, Proposal, getAccounts, getProposals, storeProposals } from './lib/storage.ts';
 import { AccountCard } from './components/account-card.tsx';
 import { Header } from './components/header.tsx';
 import { useForm } from 'react-hook-form';
 import { ProposalRow } from './components/proposal-row.tsx';
-import { Schnorr, SchnorrSignature } from '@aztec/circuits.js/barretenberg';
+import { Schnorr } from '@aztec/circuits.js/barretenberg';
 import { Fr } from '@aztec/circuits.js';
 import { useEffect, useState } from 'react';
+import { AccountWalletWithPrivateKey, computeAuthWitMessageHash, computeMessageSecretHash, getSandboxAccountsWallets } from '@aztec/aztec.js';
+import debug from 'debug';
+import { TokenContract } from '@aztec/noir-contracts/types';
+
+const logger = debug('sandcastle:app');
+logger.enabled = true;
 
 type FormData = {
-  message: string;
+  amount: number;
 }
 
 function App() {
-  const [network] = useAtom(networkAtom);
   const accounts = getAccounts();
+  const [network] = useAtom(networkAtom);
+  const [multisig] = useAtom(multisigAtom);
+  const [token, setToken] = useState<TokenContract | undefined>();
   const { register, handleSubmit } = useForm<FormData>();
+
+  const [recipients, setRecipients] = useState<AccountWalletWithPrivateKey[] | undefined>();
+
+  useEffect(() => {
+    (async () => {
+      if (!network.pxe) return;
+      const accounts = await getSandboxAccountsWallets(network.pxe);
+      setRecipients(accounts);
+    })()
+  }, [network]);
 
   const [proposals, setProposals] = useState<Proposal[]>(getProposals());
   useEffect(() => {
@@ -29,13 +47,44 @@ function App() {
     }
   }, [proposals]);
 
-  const teknos = async () => {
+  useEffect(() => {
+    (async () => {
+      const address = multisig?.getAddress();
+      const wallet = multisig;
+      if (address && wallet) {
+        logger('deploying token contract...');
+        const token = await TokenContract.deploy(wallet, { address }).send().deployed();
+        logger(`deployed token contract at ${token.address}`);
 
-  };
+        const secret = Fr.random();
+        const secretHash = await computeMessageSecretHash(secret);
+
+        const mintAmount = 5000n;
+        const receipt = await token.methods.mint_private(mintAmount, secretHash).send().wait();
+        logger('minted', receipt);
+
+        await token.methods.redeem_shield({ address }, mintAmount, secret).send().wait();
+
+        const balance = await token.methods.balance_of_private({ address }).view();
+        logger(`balance of multisig is now ${balance}`);
+
+        setToken(token);
+      }
+    })();
+  }, [multisig]);
 
   const addNewProposal = async (d: FormData) => {
-    const message = d.message;
     const proposals = getProposals();
+    const nonce = proposals.length;
+    const amount = d.amount;
+
+    if (!recipients) throw new Error('recipients not yet deployed');
+    if (!token) throw new Error('token contract not yet deployed');
+    if (!multisig) throw new Error('multisig contract not yet deployed');
+
+    let action = token?.withWallet(multisig).methods.transfer(recipients[0].getAddress(), multisig.getAddress(), amount, nonce);
+    const message = await computeAuthWitMessageHash(multisig.getAddress(), action.request());
+
     proposals.push({
       id: proposals.length,
       message: Fr.fromString(message),
@@ -102,11 +151,11 @@ function App() {
             <MultisigCard />
             <Card>
               <CardHeader>
-                <CardTitle>Propose Message</CardTitle>
+                <CardTitle>Propose Transfer</CardTitle>
               </CardHeader>
               <form onSubmit={handleSubmit(addNewProposal)}>
                 <CardContent className="">
-                  <Input {...register("message")} placeholder='These pretzels are making me thirsty'/>
+                  <Input {...register('amount')} placeholder='10'/>
                 </CardContent>
                 <CardFooter>
                   <Button type='submit' className='ml-auto'>Propose</Button>
@@ -119,7 +168,7 @@ function App() {
                 </CardHeader>
                 <CardContent>
                   {proposals.map(proposal => (
-                    <ProposalRow proposal={proposal} approve={approve} deny={deny} />
+                    <ProposalRow key={proposal.id} proposal={proposal} approve={approve} deny={deny} />
                   ))}
                 </CardContent>
               </Card>

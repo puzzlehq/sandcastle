@@ -2,7 +2,7 @@ import { Button } from "./ui/button.tsx";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card.tsx";
 import { Account, Proposal, getAccounts } from "@/lib/storage.ts";
 import { HStack } from "./ui/stacks.tsx";
-import { CheckIcon, Cross2Icon } from '@radix-ui/react-icons';
+import { CheckIcon, Cross2Icon, CheckCircledIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 
 enum Status {
   NeedsDecision,
@@ -21,7 +21,6 @@ const ProposalRow = (props: {
   const statuses = accounts.map(account => {
     const signature = proposal.signatures.find(s => s.pubkey === account.pubkey.toString());
     if (!signature) throw new Error(`couldnt get signature for ${account.name}`);
-    console.log('statusing signature', signature);
     if (!!signature.signature && !signature.denied) {
       return { account, status: Status.Approved };
     } else if (signature.denied) {
@@ -51,10 +50,10 @@ const ProposalRow = (props: {
                 </CardHeader>
                 <CardContent className='p-4'>
                   { status === Status.Approved && (
-                    <CheckIcon />
+                    <CheckCircledIcon color='green' />
                   )}
                   { status === Status.Denied && (
-                    <Cross2Icon />
+                    <CrossCircledIcon color='red' />
                   )}
                   { status === Status.NeedsDecision && (
                     <HStack>

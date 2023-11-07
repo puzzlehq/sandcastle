@@ -1,14 +1,14 @@
+
 [package]
-name = "multi_schnorr"
-type = "contract"
-authors = [""]
-compiler_version = "0.1"
+name = 'multi_schnorr'
+type = 'contract'
+authors = [
+  '',
+]
+compiler_version = '0.18.0'
 
 [dependencies]
-# Framework import
-aztec = { git="https://github.com/AztecProtocol/aztec-packages/", tag="aztec-packages-v0.13.1", directory="yarn-project/aztec-nr/aztec" }
-authwit = { git="https://github.com/AztecProtocol/aztec-packages/", tag="aztec-packages-v0.13.1", directory="yarn-project/aztec-nr/authwit" }
-
-# Utility dependencies
-value_note = { git="https://github.com/AztecProtocol/aztec-packages/", tag="aztec-packages-v0.13.1", directory="yarn-project/aztec-nr/value-note"}
-safe_math = { git="https://github.com/AztecProtocol/aztec-packages/", tag="aztec-packages-v0.13.1", directory="yarn-project/aztec-nr/safe-math"}
+aztec = { git = 'https://github.com/AztecProtocol/aztec-packages/', tag = 'aztec-packages-v0.14.1', directory = 'yarn-project/aztec-nr/aztec' }
+authwit = { git = 'https://github.com/AztecProtocol/aztec-packages/', tag = 'aztec-packages-v0.14.1', directory = 'yarn-project/aztec-nr/authwit' }
+value_note = { git = 'https://github.com/AztecProtocol/aztec-packages/', tag = 'aztec-packages-v0.14.1', directory = 'yarn-project/aztec-nr/value-note' }
+safe_math = { git = 'https://github.com/AztecProtocol/aztec-packages/', tag = 'aztec-packages-v0.14.1', directory = 'yarn-project/aztec-nr/safe-math' }
