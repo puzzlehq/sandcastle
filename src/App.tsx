@@ -30,6 +30,7 @@ function App() {
   const [network] = useAtom(networkAtom);
   const [multisig] = useAtom(multisigAtom);
   const [token, setToken] = useState<TokenContract | undefined>();
+  const [deployingToken, setDeployingToken] = useState(false);
   const { register, handleSubmit } = useForm<FormData>();
 
   const [recipients, setRecipients] = useState<AccountWalletWithPrivateKey[] | undefined>();
@@ -51,17 +52,20 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const wallet = multisig;
-      if (wallet) {
-        const address = wallet.getAddress();
+      if (multisig) {
+        const address = multisig.getAddress();
         logger('deploying token contract...');
-        const token = await TokenContract.deploy(wallet, { address }).send().deployed();
+        setDeployingToken(true);
+        const token = await TokenContract.deploy(multisig, { address }).send().deployed();
+        setToken(token);
+        setDeployingToken(false);
         logger(`deployed token contract at ${token.address}`);
 
         const secret = Fr.random();
         const secretHash = await computeMessageSecretHash(secret);
 
         const mintAmount = 5000n;
+        logger('minting initial amount...', mintAmount);
         const receipt = await token.methods.mint_private(mintAmount, secretHash).send().wait();
         logger('minted', receipt);
 
@@ -69,8 +73,6 @@ function App() {
 
         const balance = await token.methods.balance_of_private({ address }).view();
         logger(`balance of multisig is now ${balance}`);
-
-        setToken(token);
       }
     })();
   }, [multisig]);
@@ -78,7 +80,7 @@ function App() {
   const addNewProposal = async (d: FormData) => {
     const proposals = getProposals();
     const nonce = proposals.length;
-    const amount = d.amount;
+    const amount = new Fr(d.amount);
 
     if (!recipients) throw new Error('recipients not yet deployed');
     if (!token) throw new Error('token contract not yet deployed');
@@ -89,7 +91,7 @@ function App() {
 
     proposals.push({
       id: proposals.length,
-      amount,
+      amount: d.amount,
       message: Fr.fromBuffer(message),
       signatures: accounts.map(account => {
         return {
@@ -142,6 +144,7 @@ function App() {
 
   const execute = async (proposal: Proposal) => {
     if (!network || !multisig || !token || !recipients) return;
+    console.log('executing proposal', proposal);
     const authWit = await multisig.createAuthWitness(proposal.message);
     await multisig.addAuthWitness(authWit);
     logger('transferring tokens...');
@@ -175,21 +178,30 @@ function App() {
                   </CardFooter>
                 </form>
               ) : (
-                <CardContent>
-                  <HStack className='items-center'>
-                    <p>Deploying token contract...</p>
-                    <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
-                  </HStack>
-                </CardContent>
+                  deployingToken ? (
+                    <CardContent>
+                      <HStack className='items-center'>
+                        <p>Deploying token contract...</p>
+                        <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+                      </HStack>
+                    </CardContent>
+                  ) : (
+                    <CardContent>
+                      <HStack className='items-center'>
+                        <p>Waiting on multisig...</p>
+                        <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+                      </HStack>
+                    </CardContent>
+                  )
               ) }
             </Card>
               <Card>
                 <CardHeader>
                   <CardTitle>Proposals</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className='flex flex-col gap-4'>
                   {proposals.map(proposal => (
-                    <ProposalRow key={proposal.id} proposal={proposal} approve={approve} deny={deny} />
+                    <ProposalRow key={proposal.id} proposal={proposal} approve={approve} deny={deny} execute={execute} />
                   ))}
                 </CardContent>
               </Card>

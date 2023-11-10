@@ -45,7 +45,7 @@ contract MultiSchnorr {
     signing_pub_key_y_1: pub Field,
     signing_pub_key_x_2: pub Field,
     signing_pub_key_y_2: pub Field,
-  ) {        
+  ) {
     let this = context.this_address();
 
     let mut pub_key_note_0 = PublicKeyNote::new(signing_pub_key_x_0, signing_pub_key_y_0, this);
@@ -86,10 +86,12 @@ contract MultiSchnorr {
     let storage = Storage::init(Context::private(context));
     let public_keys = storage.signers.get_notes(NoteGetterOptions::new());
 
+    // Load auth witness
+    let witness: [Field; 64] = get_auth_witness(message_hash);
+
     for public_key in public_keys {
       let public_key = public_key.unwrap();
-      // Load auth witness
-      let witness: [Field; 64] = get_auth_witness(message_hash);
+
       let mut signature: [u8; 64] = [0; 64];
       for i in 0..64 { signature[i] = witness[i] as u8; }
 

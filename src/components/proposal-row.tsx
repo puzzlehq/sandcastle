@@ -1,5 +1,5 @@
 import { Button } from "./ui/button.tsx";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card.tsx";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "./ui/card.tsx";
 import { Account, Proposal, getAccounts } from "@/lib/storage.ts";
 import { HStack } from "./ui/stacks.tsx";
 import { CheckIcon, Cross2Icon, CheckCircledIcon, CrossCircledIcon } from '@radix-ui/react-icons';
@@ -14,8 +14,9 @@ const ProposalRow = (props: {
   proposal: Proposal,
   approve: (account: Account, proposal: Proposal) => void,
   deny: (account: Account, proposal: Proposal) => void,
+  execute: (proposal: Proposal) => void,
 }) => {
-  const { proposal, approve, deny } = props;
+  const { proposal, approve, deny, execute } = props;
   const accounts = getAccounts();
 
   const statuses = accounts.map(account => {
@@ -34,10 +35,7 @@ const ProposalRow = (props: {
     <Card className="col-span-4">
       <CardHeader>
         <CardTitle>
-          <HStack className='justify-between items-top'>
-            <p>{ proposal.message.toString() }</p>
-            <Button>Execute</Button>
-          </HStack>
+            <p>{ '(Nonce ' + proposal.id + ') Transfer ' + proposal.amount.toString() + ' tokens' }</p>
         </CardTitle>
       </CardHeader>
       <CardContent className="">
@@ -67,6 +65,9 @@ const ProposalRow = (props: {
           })}
         </HStack>
       </CardContent>
+      <CardFooter className='justify-center'>
+        <Button onClick={() => execute(proposal)}>Execute</Button>
+      </CardFooter>
     </Card>
   );
 };

@@ -3,7 +3,6 @@ import { Fr, GrumpkinScalar, Point } from "@aztec/circuits.js";
 import { SchnorrSignature } from "@aztec/circuits.js/barretenberg";
 
 const ACCOUNTS = 'accounts';
-const ENCRYPTION_KEY = 'encryption_key';
 export type Account = { name: string, privkey: GrumpkinScalar, pubkey: Point };
 type AccountStorage = { name: string, privkey: string, pubkey: string };
 
@@ -45,6 +44,8 @@ export function getAccounts(): Account[] {
   }));
 }
 
+const ENCRYPTION_KEY = 'encryption_key';
+
 export function storeEncryptionKey(key: GrumpkinScalar) {
   localStorage.setItem(ENCRYPTION_KEY, key.toString());
 }
@@ -57,7 +58,17 @@ export function getEncryptionKey() {
   return null;
 }
 
+const MULTISIG = 'multisig';
+export function storeMultisigAddress(address: string) {
+  localStorage.setItem(MULTISIG, address);
+}
+
+export function getMultisigAddress() {
+  return localStorage.getItem(MULTISIG);
+}
+
 const PROPOSALS = 'proposals';
+
 export type Signature = {
   pubkey: string;
   signature?: SchnorrSignature;

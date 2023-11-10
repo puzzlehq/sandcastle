@@ -37,7 +37,11 @@ const MultisigCard = () => {
         encryptionKey,
         new MultiSchnorrAccountContract(pubkeys[0], pubkeys[1], pubkeys[2])
       );
-      const wallet = await multisig.waitDeploy();
+
+      // const existing = new AccountManager()
+
+      const wallet = await multisig.getWallet();
+      // const wallet = await multisig.waitDeploy();
       setWallet(wallet);
     })()
   }, [network]);
@@ -86,7 +90,7 @@ const MultisigCard = () => {
           </Button>
         ) : (
           <HStack className='items-center'>
-            <p>Deploying multisig contract...</p>
+            <p>Loading multisig contract...</p>
             <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
           </HStack>
         )}
